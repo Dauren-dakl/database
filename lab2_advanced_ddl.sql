@@ -12,10 +12,71 @@ CREATE DATABASE university_test
     IS_TEMPLATE true
     CONNECTION LIMIT 10;
 
+CREATE TABLESPACE student_data location 'C:\Users\Acer\Desktop\data\students';
+CREATE TABLESPACE course_data OWNER postgres location 'C:\Users\Acer\Desktop\data\courses';
+
+CREATE DATABASE university_distributed
+    WITH TABLESPACE = student_data
+    TEMPLATE = template0
+    ENCODING = 'LATIN9'
+    LC_COLLATE = 'C'
+    LC_CTYPE ='C';
+-- 2,1
+
 \c university_main
 
-CREATE TABLE student_records
+CREATE TABLE students
 (
+
+    student_id      SERIAL PRIMARY KEY,
+    first_name      VARCHAR(50),
+    last_name       VARCHAR(50),
+    email           VARCHAR(100),
+    phone           CHAR(15),
+    date_of_birth   DATE,
+    emrollment_date DATE,
+    gpa             DECIMAL(4, 2),
+    is_active       BOOLEAN,
+    graduation_year SMALLINT
+
+);
+
+CREATE TABLE professors
+(
+    professor_id     SERIAL PRIMARY KEY,
+    first_name       VARCHAR(50),
+    last_name        VARCHAR(50),
+    email            VARCHAR(100),
+    office_number    CHAR(20),
+    hire_date        DATE,
+    salary           DECIMAL(10, 2),
+    is_tenured       BOOLEAN,
+    years_experience INT
+);
+CREATE TABLE courses
+(
+    course_id      SERIAL PRIMARY KEY,
+    course_code    CHAR(8),
+    course_title   VARCHAR(100),
+    description    TEXT,
+    credits        SMALLINT,
+    max_enrollment INT,
+    course_fee     DECIMAL(10, 2),
+    is_online      BOOLEAN,
+    created_at     TIMESTAMP WITHOUT TIME ZONE
+);
+CREATE TABLE class_schedule
+(
+    schedule_id  SERIAL PRIMARY KEY,
+    course_id    INT,
+    professor_id INT,
+    classroom    VARCHAR(20),
+    class_date   DATE,
+    start_time   TIME WITHOUT TIME ZONE,
+    end_time     TIME WITHOUT TIME ZONE,
+    duration     INTERVAL
+);
+CREATE TABLE student_records(
     record_id             SERIAL PRIMARY KEY,
     student_id            INT,
     course_id             INT,
